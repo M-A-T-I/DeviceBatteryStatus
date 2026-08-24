@@ -92,7 +92,9 @@ namespace Stan_baterii
 
                 if (batteryLevel >= 0 && batteryLevel <= 100)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[STAN BATERII]: {batteryLevel}%");
+                    // Aktualizacja interfejsu graficznego
+                    BatteryText.Text = $"{batteryLevel}%";
+                    BatteryFill.Width = (batteryLevel / 100.0) * 46.0;
                 }
             }
             catch (Exception ex)
