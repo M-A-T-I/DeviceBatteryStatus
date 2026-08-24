@@ -92,7 +92,6 @@ namespace Stan_baterii
 
                 if (batteryLevel >= 0 && batteryLevel <= 100)
                 {
-                    // Aktualizacja interfejsu graficznego
                     BatteryText.Text = $"{batteryLevel}%";
                     BatteryFill.Width = (batteryLevel / 100.0) * 46.0;
                 }
