@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Stan_baterii
+namespace DeviceBatteryStatus
 {
     /// <summary>
     /// Interaction logic for App.xaml
