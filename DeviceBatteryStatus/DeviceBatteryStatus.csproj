@@ -7,7 +7,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>DeviceBatteryStatus.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="DeviceBatteryStatus.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HidSharpCore" Version="1.3.0" />
