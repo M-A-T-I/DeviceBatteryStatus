@@ -40,6 +40,15 @@ namespace DeviceBatteryStatus
             this.DragMove();
         }
 
+        private void ToggleVisibilityItem_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void CloseItem_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         private void ReadBatteryFromMemory()
         {
             Process process = Process.GetProcessesByName("Dark Project Nexus").FirstOrDefault();

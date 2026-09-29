@@ -7,7 +7,96 @@
         WindowStyle="None" AllowsTransparency="True" Background="#181818"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Topmost="True" 
-        ResizeMode="CanResize">
+        ResizeMode="CanResize"
+        ShowInTaskbar="False">
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <ContextMenu.Template>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="#181818" BorderBrush="#0066FF" BorderThickness="1.5" CornerRadius="2" Padding="0,4,0,4">
+                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </ControlTemplate>
+            </ContextMenu.Template>
+
+            <!-- Opcja 1: Ukryj -->
+            <MenuItem Header="Ukryj Dark Project Nexus" x:Name="ToggleVisibilityItem" IsCheckable="True" IsChecked="False" Click="ToggleVisibilityItem_Click">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Background" Value="#181818"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Padding" Value="10,6,15,6"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="MenuItem">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="22"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock x:Name="CheckMark" Text="✓" Foreground="#0066FF" FontSize="14" FontWeight="Bold" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <ContentPresenter ContentSource="Header" Grid.Column="1" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#2A2A2A"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+
+            <!-- Separator -->
+            <Separator>
+                <Separator.Template>
+                    <ControlTemplate TargetType="Separator">
+                        <Rectangle Height="1" Fill="#0066FF" Margin="5,2,5,2" Opacity="0.5"/>
+                    </ControlTemplate>
+                </Separator.Template>
+            </Separator>
+
+            <!-- Opcja 2: Zamknij -->
+            <MenuItem Header="Zamknij" Click="CloseItem_Click">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Background" Value="#181818"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Padding" Value="10,6,15,6"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="MenuItem">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="22"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter ContentSource="Header" Grid.Column="1" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#2A2A2A"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+        </ContextMenu>
+    </Window.ContextMenu>
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" GlassFrameThickness="-1" />
@@ -18,14 +107,11 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
                 <Grid Width="20" Height="30" Margin="0,0,12,0" VerticalAlignment="Center">
-
                     <Border BorderBrush="#0066FF" BorderThickness="1.5" CornerRadius="10" />
-
                     <Canvas Width="20" Height="30">
                         <Line X1="0" Y1="14" X2="20" Y2="14" Stroke="#0066FF" StrokeThickness="1.5" />
                         <Line X1="10" Y1="0" X2="10" Y2="14" Stroke="#0066FF" StrokeThickness="1.5" />
                     </Canvas>
-
                     <Border Width="4" Height="8" 
                             BorderBrush="#0066FF" BorderThickness="1.5" 
                             CornerRadius="2" Background="#181818" 
@@ -48,13 +134,8 @@
                             CornerRadius="1"
                             Padding="2"
                             Background="#181818">
-
                         <Grid>
-                            <Rectangle x:Name="BatteryFill"
-                                       Fill="#00FF87"
-                                       HorizontalAlignment="Left"
-                                       Width="0"/>
-
+                            <Rectangle x:Name="BatteryFill" Fill="#00FF87" HorizontalAlignment="Left" Width="0"/>
                             <Path x:Name="ChargingIcon"
                                   Data="M 15 68 L 105 13 L 96 50 L 160 32 L 70 87 L 79 50 Z"
                                   Fill="#0066FF"
@@ -62,7 +143,6 @@
                                   Margin="8,1,8,1"
                                   Visibility="Hidden"/>
                         </Grid>
-
                     </Border>
                     <Border BorderBrush="#0066FF"
                             BorderThickness="0,1.5,1.5,1.5"
