@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.IO;
 
 namespace DeviceBatteryStatus
 {
@@ -30,9 +31,42 @@ namespace DeviceBatteryStatus
         private IntPtr _nexusWindowHandle = IntPtr.Zero;
         private DispatcherTimer _timer;
 
+        private string _posPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BatteryWidgetPos.txt");
+
+        private void LoadPosition()
+        {
+            if (File.Exists(_posPath))
+            {
+                var lines = File.ReadAllLines(_posPath);
+                if (lines.Length >= 4 &&
+                    double.TryParse(lines[0], out double t) &&
+                    double.TryParse(lines[1], out double l) &&
+                    double.TryParse(lines[2], out double w) &&
+                    double.TryParse(lines[3], out double h))
+                {
+                    this.Top = t;
+                    this.Left = l;
+                    this.Width = w;
+                    this.Height = h;
+                }
+            }
+        }
+
+        private void SavePosition()
+        {
+            File.WriteAllLines(_posPath, new[] {
+        this.Top.ToString(),
+        this.Left.ToString(),
+        this.Width.ToString(),
+        this.Height.ToString()
+    });
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            LoadPosition();
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(2);
@@ -89,6 +123,7 @@ namespace DeviceBatteryStatus
                 }
             }
 
+            SavePosition();
             Application.Current.Shutdown();
         }
 
