@@ -21,6 +21,13 @@ namespace DeviceBatteryStatus
         [DllImport("kernel32.dll")]
         public static extern bool CloseHandle(IntPtr hObject);
 
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+
+        private IntPtr _nexusWindowHandle = IntPtr.Zero;
         private DispatcherTimer _timer;
 
         public MainWindow()
@@ -42,16 +49,52 @@ namespace DeviceBatteryStatus
 
         private void ToggleVisibilityItem_Click(object sender, RoutedEventArgs e)
         {
+            var process = Process.GetProcessesByName("Dark Project Nexus").FirstOrDefault();
+
+            if (process != null && process.MainWindowHandle != IntPtr.Zero)
+            {
+                _nexusWindowHandle = process.MainWindowHandle;
+            }
+
+            if (_nexusWindowHandle != IntPtr.Zero)
+            {
+                if (ToggleVisibilityItem.IsChecked == true)
+                {
+                    ShowWindow(_nexusWindowHandle, SW_HIDE);
+                }
+                else
+                {
+                    ShowWindow(_nexusWindowHandle, SW_SHOW);
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Nie znaleziono okna aplikacji Dark Project Nexus.");
+                ToggleVisibilityItem.IsChecked = false;
+            }
         }
 
         private void CloseItem_Click(object sender, RoutedEventArgs e)
         {
+            if (_nexusWindowHandle != IntPtr.Zero)
+            {
+                ShowWindow(_nexusWindowHandle, SW_SHOW);
+            }
+            else
+            {
+                var process = Process.GetProcessesByName("Dark Project Nexus").FirstOrDefault();
+                if (process != null && process.MainWindowHandle != IntPtr.Zero)
+                {
+                    ShowWindow(process.MainWindowHandle, SW_SHOW);
+                }
+            }
+
             Application.Current.Shutdown();
         }
 
         private void ReadBatteryFromMemory()
         {
-            Process process = Process.GetProcessesByName("Dark Project Nexus").FirstOrDefault();
+            var process = Process.GetProcessesByName("Dark Project Nexus").FirstOrDefault();
 
             if (process == null)
             {
@@ -59,8 +102,8 @@ namespace DeviceBatteryStatus
                 return;
             }
 
-            ProcessModule guiModule = null;
-            ProcessModule coreModule = null;
+            ProcessModule? guiModule = null;
+            ProcessModule? coreModule = null;
 
             foreach (ProcessModule m in process.Modules)
             {
@@ -103,10 +146,10 @@ namespace DeviceBatteryStatus
                 int batteryLevel = BitConverter.ToInt32(valueBuffer, 0);
 
                 int isCharging = 0;
-                if (coreModule != null)
+                if (guiModule != null)
                 {
-                    IntPtr chargeAddress = coreModule.BaseAddress + 0x0055DEE8;
-                    int[] chargeOffsets = { 0x2C8, 0x8, 0x60, 0x8, 0x80, 0x28, 0x8 };
+                    IntPtr chargeAddress = guiModule.BaseAddress + 0x0058CD50;
+                    int[] chargeOffsets = { 0x38, 0x18, 0xA8, 0x8, 0x80, 0x28, 0x8 };
                     IntPtr currentChargeAddress = chargeAddress;
 
                     for (int i = 0; i < chargeOffsets.Length; i++)
